@@ -1,23 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/authMiddleware");
+const userMiddleware = require("../middleware/userMiddleware");
 
-
-
-router.get("/user-only-route", auth, async (req, res) => {
-  try {
-    if (req.user.role == "admin") {
-      return res
-        .status(403)
-        .json({ message: "Access denied. user only route." });
-    } else {
-      return res
-        .status(200)
-        .json({ message: "welcome user ,user only route." });
-    }
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
+// User Dashboard (User only)
+router.get("/dashboard", auth, userMiddleware, (req, res) => {
+    res.json({ message: "Welcome User! You have access to your dashboard." });
 });
 
 module.exports = router;
