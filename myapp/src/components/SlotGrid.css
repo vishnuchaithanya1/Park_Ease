@@ -1,0 +1,44 @@
+.slot-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(5, 80px);
+
+  grid-gap: 15px;
+
+  margin-top: 20px;
+
+}
+ 
+.slot-box {
+
+  width: 80px;
+
+  height: 80px;
+
+  border-radius: 10px;
+
+  font-weight: bold;
+
+  color: white;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+}
+ 
+.available {
+
+  background-color: #4CAF50;  /* Green */
+
+}
+ 
+.booked {
+
+  background-color: #F44336;  /* Red */
+
+}
+ 

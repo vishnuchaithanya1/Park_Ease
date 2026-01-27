@@ -1,0 +1,244 @@
+.fee-details-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.fee-details-modal {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 22px;
+    color: #2d3748;
+}
+
+.close-icon {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #718096;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.close-icon:hover {
+    background: #f7fafc;
+    color: #2d3748;
+}
+
+.fee-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-section {
+    background: #f7fafc;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.info-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row.highlight {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.info-row .label {
+    color: #718096;
+    font-size: 14px;
+}
+
+.info-row .value {
+    color: #2d3748;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.breakdown-details {
+    margin-top: 10px;
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid #667eea;
+}
+
+.breakdown-details p {
+    margin: 0;
+    font-size: 13px;
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.pricing-info {
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid #48bb78;
+}
+
+.pricing-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.total-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    color: white;
+    margin-top: 10px;
+}
+
+.total-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.total-amount {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.payment-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f7fafc;
+    border-radius: 8px;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge.completed {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.status-badge.pending {
+    background: #feebc8;
+    color: #7c2d12;
+}
+
+.transaction-id {
+    font-size: 11px;
+    color: #718096;
+    font-family: monospace;
+}
+
+.close-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background: #e2e8f0;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background: #cbd5e0;
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 40px 20px;
+    color: #718096;
+}
+
+.error {
+    color: #e53e3e;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

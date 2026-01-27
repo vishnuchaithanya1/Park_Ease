@@ -1,0 +1,102 @@
+.location-filter {
+    background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+    box-shadow: var(--shadow-lg);
+}
+
+.filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    color: white;
+    font-weight: var(--font-semibold);
+}
+
+.filter-icon {
+    font-size: var(--text-xl);
+}
+
+.filter-label {
+    font-size: var(--text-base);
+    letter-spacing: 0.5px;
+}
+
+.location-select {
+    flex: 1;
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    background: white;
+    color: var(--color-slate-900);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-weight: var(--font-medium);
+}
+
+/* Dark mode dropdown */
+[data-theme="dark"] .location-select {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .location-select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.location-select:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.location-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+}
+
+.location-select optgroup {
+    font-weight: var(--font-bold);
+    color: var(--color-primary-600);
+    padding: var(--space-1);
+}
+
+.location-select option {
+    padding: var(--space-2);
+    font-weight: var(--font-normal);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .location-filter {
+        padding: var(--space-3) var(--space-4);
+        gap: var(--space-2);
+    }
+
+    .location-select {
+        font-size: var(--text-sm);
+        padding: var(--space-2) var(--space-3);
+    }
+}
+
+@media (max-width: 480px) {
+    .location-filter {
+        padding: var(--space-2) var(--space-3);
+        margin-bottom: var(--space-4);
+    }
+
+    .filter-icon {
+        font-size: var(--text-lg);
+    }
+
+    .filter-label {
+        font-size: var(--text-sm);
+    }
+}

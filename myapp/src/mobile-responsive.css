@@ -1,0 +1,61 @@
+/* Mobile Responsive Styles - Add to the end of App.css */
+
+/* Tablet and below (768px) */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 10px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .navbar h1 {
+        font-size: 1.5rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .nav-links button {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .tab-button {
+        flex: 1 1 45%;
+        min-width: 120px;
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+
+    .content-area {
+        padding: 15px;
+    }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+    .navbar h1 {
+        font-size: 1.2rem;
+    }
+
+    .tab-button {
+        flex: 1 1 100%;
+        font-size: 0.85rem;
+    }
+
+    .content-area {
+        padding: 10px;
+    }
+}

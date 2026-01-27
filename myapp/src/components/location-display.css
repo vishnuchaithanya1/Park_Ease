@@ -1,0 +1,18 @@
+/* Add to existing MyBookings.css or use as utility */
+
+.booking-location,
+.payment-location {
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    margin: var(--space-2) 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-medium);
+    border: 1px solid var(--border-color);
+}
+
+.location-city {
+    color: var(--text-tertiary);
+    font-size: var(--text-xs);
+}

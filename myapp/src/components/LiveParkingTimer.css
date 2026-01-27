@@ -1,0 +1,108 @@
+.live-parking-timer {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.timer-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #4ade80;
+    border-radius: 50%;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px rgba(74, 222, 128, 0);
+    }
+}
+
+.timer-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.time-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-width: 60px;
+}
+
+.time-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+    font-family: 'Courier New', monospace;
+}
+
+.time-unit {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.time-separator {
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 4px;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .live-parking-timer {
+        padding: 12px;
+    }
+
+    .time-segment {
+        padding: 6px 8px;
+        min-width: 50px;
+    }
+
+    .time-value {
+        font-size: 24px;
+    }
+
+    .time-unit {
+        font-size: 9px;
+    }
+
+    .time-separator {
+        font-size: 20px;
+    }
+}

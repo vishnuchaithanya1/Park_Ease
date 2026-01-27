@@ -1,0 +1,267 @@
+.payment-summary-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.payment-summary-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.payment-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Timer Styles */
+.parking-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.timer-unit {
+    text-align: center;
+}
+
+.timer-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: #667eea;
+    line-height: 1;
+}
+
+.timer-label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.timer-separator {
+    font-size: 48px;
+    font-weight: 700;
+    color: #667eea;
+    margin: 0 5px;
+}
+
+.parking-start-time {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Payment Summary Section */
+.payment-summary-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.payment-summary-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-row:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.summary-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+.estimated-fee {
+    color: #667eea;
+    font-size: 20px;
+}
+
+.breakdown-text {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    color: #888;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Payment Method Section */
+.payment-method-section {
+    margin-bottom: 25px;
+}
+
+.payment-method-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-option {
+    display: block;
+    cursor: pointer;
+}
+
+.payment-option input[type="radio"] {
+    display: none;
+}
+
+.payment-option-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.payment-option:hover .payment-option-content {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.payment-option.selected .payment-option-content {
+    border-color: #667eea;
+    background: #f8f9ff;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.payment-icon {
+    font-size: 24px;
+}
+
+.payment-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Action Buttons */
+.payment-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.start-parking-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+}
+
+.start-parking-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+}
+
+.start-parking-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    padding: 16px 30px;
+    background: #f0f0f0;
+    color: #666;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #e0e0e0;
+}
+
+/* Error and Loading States */
+.payment-error {
+    background: #fee;
+    color: #c33;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.payment-loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .payment-summary-card {
+        padding: 30px 20px;
+    }
+
+    .timer-value {
+        font-size: 36px;
+    }
+
+    .timer-separator {
+        font-size: 36px;
+    }
+
+    .payment-actions {
+        flex-direction: column;
+    }
+
+    .cancel-btn {
+        width: 100%;
+    }
+}

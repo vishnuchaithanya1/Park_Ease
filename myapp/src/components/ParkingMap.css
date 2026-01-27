@@ -1,0 +1,387 @@
+.parking-map-container {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    animation: slideIn 0.6s ease-out;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.map-header h3 {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+.map-legend {
+    display: flex;
+    gap: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.legend-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.legend-dot.available {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #10b981;
+}
+
+.legend-dot.booked {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #ef4444;
+}
+
+.parking-lot {
+    background: #2d3748;
+    /* Asphalt color */
+    border-radius: 16px;
+    padding: 40px;
+    position: relative;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.3);
+    border: 2px solid #4a5568;
+}
+
+.parking-surface {
+    position: relative;
+    padding: 20px 0;
+}
+
+/* Road Lane Effect */
+.road-lane .parking-map-container {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin: 20px 0;
+}
+
+.map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.map-legend {
+    display: flex;
+    gap: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-dot.user-loc {
+    background-color: #3b82f6;
+    /* Blue for user */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.legend-dot.available {
+    background-color: #2ca02c;
+    /* Green marker color */
+}
+
+.legend-dot.booked {
+    background-color: #cb2b3e;
+    /* Red marker color */
+}
+
+/* Map specific styles */
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    flex: 1;
+    z-index: 1;
+}
+
+/* Popup Button */
+.map-book-btn {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px;
+    width: 100%;
+    font-weight: 500;
+}
+
+.map-book-btn:hover {
+    background: #4338ca;
+}
+
+.map-popup-content {
+    text-align: center;
+    font-size: 14px;
+}
+
+.dashed-center {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    background: repeating-linear-gradient(to bottom,
+            #fbbf24 0,
+            #fbbf24 20px,
+            transparent 20px,
+            transparent 40px);
+    transform: translateX(-50%);
+    opacity: 0.6;
+    z-index: 0;
+}
+
+.entrance-marker,
+.exit-marker {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.exit-marker {
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
+.entrance-arrow,
+.exit-arrow {
+    font-size: 32px;
+    animation: bounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.entrance-text,
+.exit-text {
+    font-size: 14px;
+    font-weight: 800;
+    color: #60a5fa;
+    letter-spacing: 2px;
+    margin-top: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.parking-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.parking-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.row-label {
+    font-size: 20px;
+    font-weight: 800;
+    color: #f8fafc;
+    min-width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.row-slots {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    flex: 1;
+    justify-content: center;
+    /* Center slots in row */
+}
+
+.map-slot {
+    width: 60px;
+    height: 100px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    border-right: 2px solid rgba(255, 255, 255, 0.3);
+    background: #1a202c;
+}
+
+/* Slot Status Colors */
+.map-slot.available {
+    background: rgba(16, 185, 129, 0.15);
+    /* Tinted dark background */
+    border: 2px solid #10b981;
+}
+
+.map-slot.booked {
+    background: rgba(239, 68, 68, 0.15);
+    border: 2px solid #ef4444;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.map-slot:hover.available {
+    transform: translateY(-5px) scale(1.1);
+    background: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+    z-index: 10;
+}
+
+.slot-number {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.car-icon {
+    font-size: 24px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+    transform: rotate(180deg);
+    /* Face entry */
+}
+
+.map-slot.available .car-icon {
+    font-size: 20px;
+    opacity: 0.8;
+    transform: none;
+    /* P icon shouldn't rotate */
+}
+
+.book-hint {
+    font-size: 10px;
+    font-weight: 800;
+    color: white;
+    background: #10b981;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+}
+
+.map-slot:hover.available .book-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .parking-map-container {
+        padding: 15px;
+    }
+
+    .parking-lot {
+        padding: 20px 10px;
+    }
+
+    .row-slots {
+        gap: 10px;
+    }
+
+    .map-slot {
+        width: 50px;
+        height: 80px;
+    }
+
+    .parking-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .row-label {
+        width: 100%;
+        height: 40px;
+    }
+}
