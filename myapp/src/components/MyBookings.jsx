@@ -5,6 +5,7 @@ import PaymentModal from './PaymentModal';
 import ParkingActions from './ParkingActions';
 import LiveParkingTimer from './LiveParkingTimer';
 import TicketModal from './TicketModal';
+import { calculateFee } from '../utils/feeUtils';
 import './MyBookings.css';
 
 const MyBookings = () => {
@@ -21,6 +22,20 @@ const MyBookings = () => {
         loadBookings();
     }, []);
 
+    // Add interval to update checked-in bookings every second so fee updates in real-time
+    useEffect(() => {
+        const hasCheckedInBookings = bookings.some(b => b.parkingStatus === 'CHECKED_IN');
+
+        if (hasCheckedInBookings) {
+            const interval = setInterval(() => {
+                // Force re-render to update fees
+                setBookings(prev => [...prev]);
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [bookings]);
+
     const loadBookings = async () => {
         try {
             setLoading(true);
@@ -30,6 +45,7 @@ const MyBookings = () => {
             // Ensure bookings is an array and filter out invalid/dummy data if any
             const sanitizedBookings = (Array.isArray(data) ? data : []).map(booking => ({
                 ...booking,
+                _id: booking.id || booking._id,
                 parkingStatus: booking.parkingStatus || 'SCHEDULED' // Default to SCHEDULED if undefined
             }));
 
@@ -134,7 +150,7 @@ const MyBookings = () => {
                                 {booking.payment && (
                                     <div className="detail-row fee-row">
                                         <span className="label">Total Fee</span>
-                                        <span className="value fee-amount">₹{booking.payment.amount?.toFixed(2)}</span>
+                                        <span className="value fee-amount">₹{calculateFee(booking).amount}</span>
                                     </div>
                                 )}
                             </div>
@@ -183,7 +199,7 @@ const MyBookings = () => {
             {/* Modals */}
             {showFeeDetails && selectedBooking && (
                 <FeeDetails
-                    booking={selectedBooking}
+                    bookingId={selectedBooking._id}
                     onClose={() => setShowFeeDetails(false)}
                 />
             )}
