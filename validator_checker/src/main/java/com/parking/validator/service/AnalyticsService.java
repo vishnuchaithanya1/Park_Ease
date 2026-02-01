@@ -1,150 +1,109 @@
 package com.parking.validator.service;
 
-import com.parking.validator.model.*;
+import com.parking.validator.model.AnalyticsResponse;
+import com.parking.validator.model.Booking;
+import com.parking.validator.repository.BookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class AnalyticsService {
 
-    private static final double HOURLY_RATE = 20.0; // ₹20 per hour
+    @Autowired
+    private BookingRepository bookingRepository;
 
-    /**
-     * Calculate comprehensive analytics from booking data
-     */
-    public AnalyticsResponse calculateAnalytics(List<BookingData> bookings) {
+    public AnalyticsResponse getDashboardStats() {
+        List<Booking> bookings = bookingRepository.findAll();
+
         AnalyticsResponse response = new AnalyticsResponse();
-
-        if (bookings == null || bookings.isEmpty()) {
-            return response;
-        }
-
-        // Total bookings
         response.setTotalBookings(bookings.size());
+        response.setActiveBookings((int) bookings.stream()
+                .filter(b -> b.getStatus() == Booking.BookingStatus.BOOKED)
+                .count());
+        response.setCompletedBookings((int) bookings.stream()
+                .filter(b -> b.getStatus() == Booking.BookingStatus.COMPLETED)
+                .count());
 
-        // Active vs Completed bookings
-        long activeCount = bookings.stream()
-                .filter(b -> "BOOKED".equals(b.getStatus()))
-                .count();
-        long completedCount = bookings.stream()
-                .filter(b -> "COMPLETED".equals(b.getStatus()))
-                .count();
-
-        response.setActiveBookings((int) activeCount);
-        response.setCompletedBookings((int) completedCount);
-
-        // Calculate total revenue
         double totalRevenue = bookings.stream()
-                .mapToDouble(this::calculateBookingRevenue)
+                .filter(b -> b.getPayment() != null)
+                .mapToDouble(b -> b.getPayment().getAmount())
                 .sum();
-        response.setTotalRevenue(Math.round(totalRevenue * 100.0) / 100.0);
+        response.setTotalRevenue(totalRevenue);
 
-        // Calculate average duration in hours
+        // Calculate Average Duration
         double avgDuration = bookings.stream()
-                .mapToDouble(this::calculateDurationHours)
+                .filter(b -> b.getActualDuration() != null)
+                .mapToInt(Booking::getActualDuration)
                 .average()
                 .orElse(0.0);
-        response.setAverageDuration(Math.round(avgDuration * 100.0) / 100.0);
+        response.setAverageDuration(avgDuration);
 
-        // Find peak hour
-        String peakHour = findPeakHour(bookings);
-        response.setPeakHour(peakHour);
-
-        // Slot usage statistics
-        Map<String, Integer> slotUsage = bookings.stream()
-                .collect(Collectors.groupingBy(
-                        BookingData::getSlotNumber,
-                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)));
+        // Slot Usage
+        Map<String, Integer> slotUsage = new HashMap<>();
+        for (Booking b : bookings) {
+            String slotNum = b.getSlot() != null ? b.getSlot().getSlotNumber() : "Unknown";
+            slotUsage.put(slotNum, slotUsage.getOrDefault(slotNum, 0) + 1);
+        }
         response.setSlotUsage(slotUsage);
 
-        // Section usage statistics
-        Map<String, Integer> sectionUsage = bookings.stream()
-                .filter(b -> b.getSection() != null)
-                .collect(Collectors.groupingBy(
-                        BookingData::getSection,
-                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)));
+        // Section Usage
+        Map<String, Integer> sectionUsage = new HashMap<>();
+        for (Booking b : bookings) {
+            String section = b.getSlot() != null ? b.getSlot().getSection() : "General";
+            sectionUsage.put(section, sectionUsage.getOrDefault(section, 0) + 1);
+        }
         response.setSectionUsage(sectionUsage);
+
+        // Peak Hour (Simplified: based on startTime hour)
+        Map<Integer, Integer> hourUsage = new HashMap<>();
+        for (Booking b : bookings) {
+            if (b.getStartTime() != null) {
+                int hour = b.getStartTime().getHour();
+                hourUsage.put(hour, hourUsage.getOrDefault(hour, 0) + 1);
+            }
+        }
+        int peakHour = hourUsage.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(-1);
+        response.setPeakHour(peakHour != -1 ? String.format("%02d:00", peakHour) : "N/A");
 
         return response;
     }
 
-    /**
-     * Calculate payment amount for a booking duration
-     */
-    public PaymentResponse calculatePayment(LocalDateTime startTime, LocalDateTime endTime) {
-        if (startTime == null || endTime == null) {
-            throw new IllegalArgumentException("Start time and end time are required");
+    public List<Map<String, Object>> getRevenueData() {
+        List<Booking> bookings = bookingRepository.findAll();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // Last 7 days
+        List<String> last7Days = new ArrayList<>();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        for (int i = 6; i >= 0; i--) {
+            last7Days.add(today.minusDays(i).format(formatter));
         }
 
-        if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
-            throw new IllegalArgumentException("End time must be after start time");
+        List<Map<String, Object>> revenueData = new ArrayList<>();
+        for (String date : last7Days) {
+            List<Booking> daysBookings = bookings.stream()
+                    .filter(b -> b.getCreatedAt() != null && b.getCreatedAt().format(formatter).equals(date))
+                    .collect(Collectors.toList());
+
+            double dailyRevenue = daysBookings.stream()
+                    .filter(b -> b.getPayment() != null)
+                    .mapToDouble(b -> b.getPayment().getAmount())
+                    .sum();
+
+            Map<String, Object> dayMap = new HashMap<>();
+            dayMap.put("date", date);
+            dayMap.put("revenue", dailyRevenue);
+            dayMap.put("bookings", daysBookings.size());
+            revenueData.add(dayMap);
         }
 
-        double durationHours = calculateDurationHours(startTime, endTime);
-        double amount = durationHours * HOURLY_RATE;
-
-        // Round to 2 decimal places
-        amount = Math.round(amount * 100.0) / 100.0;
-        durationHours = Math.round(durationHours * 100.0) / 100.0;
-
-        String breakdown = String.format("%.2f hours × ₹%.2f/hour = ₹%.2f",
-                durationHours, HOURLY_RATE, amount);
-
-        return new PaymentResponse(amount, durationHours, breakdown);
-    }
-
-    /**
-     * Calculate revenue for a single booking
-     */
-    private double calculateBookingRevenue(BookingData booking) {
-        if (booking.getStartTime() == null || booking.getEndTime() == null) {
-            return 0.0;
-        }
-        double hours = calculateDurationHours(booking);
-        return hours * HOURLY_RATE;
-    }
-
-    /**
-     * Calculate duration in hours for a booking
-     */
-    private double calculateDurationHours(BookingData booking) {
-        return calculateDurationHours(booking.getStartTime(), booking.getEndTime());
-    }
-
-    /**
-     * Calculate duration in hours between two times
-     */
-    private double calculateDurationHours(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null) {
-            return 0.0;
-        }
-        Duration duration = Duration.between(start, end);
-        return duration.toMinutes() / 60.0;
-    }
-
-    /**
-     * Find the peak hour when most bookings start
-     */
-    private String findPeakHour(List<BookingData> bookings) {
-        Map<Integer, Long> hourCounts = bookings.stream()
-                .filter(b -> b.getStartTime() != null)
-                .collect(Collectors.groupingBy(
-                        b -> b.getStartTime().getHour(),
-                        Collectors.counting()));
-
-        if (hourCounts.isEmpty()) {
-            return "N/A";
-        }
-
-        int peakHour = hourCounts.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(0);
-
-        return String.format("%02d:00 - %02d:00", peakHour, peakHour + 1);
+        return revenueData;
     }
 }
