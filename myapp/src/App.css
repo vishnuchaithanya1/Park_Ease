@@ -324,7 +324,7 @@
   top: 20px;
 }
 
-/* Empty State Styles */
+/* Empty State Styles  */
 .no-location-selected {
   display: flex;
   flex-direction: column;
