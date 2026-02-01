@@ -1,71 +1,73 @@
 package com.parking.validator.controller;
 
-import com.parking.validator.model.*;
+import com.parking.validator.model.AnalyticsResponse;
+import com.parking.validator.model.Booking;
+import com.parking.validator.repository.BookingRepository;
 import com.parking.validator.service.AnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/analytics")
-@CrossOrigin(origins = "*")
 public class AnalyticsController {
 
     @Autowired
     private AnalyticsService analyticsService;
 
-    /**
-     * Get comprehensive analytics statistics
-     */
-    @PostMapping("/stats")
-    public ResponseEntity<?> getStatistics(@RequestBody AnalyticsRequest request) {
-        try {
-            AnalyticsResponse analytics = analyticsService.calculateAnalytics(request.getBookings());
-            return ResponseEntity.ok(analytics);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse("Failed to calculate analytics: " + e.getMessage()));
-        }
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @GetMapping("/dashboard")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getDashboardStats() {
+        AnalyticsResponse stats = analyticsService.getDashboardStats();
+        List<Map<String, Object>> revenueData = analyticsService.getRevenueData();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalBookings", stats.getTotalBookings());
+        response.put("activeBookings", stats.getActiveBookings());
+        response.put("completedBookings", stats.getCompletedBookings());
+        response.put("totalRevenue", stats.getTotalRevenue());
+        response.put("averageDuration", stats.getAverageDuration());
+        response.put("peakHour", stats.getPeakHour());
+        response.put("slotUsage", stats.getSlotUsage());
+        response.put("sectionUsage", stats.getSectionUsage());
+        response.put("revenueData", revenueData);
+
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Calculate payment amount for booking duration
-     */
-    @PostMapping("/calculate-payment")
-    public ResponseEntity<?> calculatePayment(@RequestBody PaymentRequest request) {
-        try {
-            PaymentResponse payment = analyticsService.calculatePayment(
-                    request.getStartTime(),
-                    request.getEndTime());
-            return ResponseEntity.ok(payment);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse("Failed to calculate payment: " + e.getMessage()));
-        }
-    }
+    @GetMapping("/activity")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getRecentActivity() {
+        List<Booking> recentBookings = bookingRepository.findAll().stream()
+                .sorted((b1, b2) -> b2.getCreatedAt().compareTo(b1.getCreatedAt()))
+                .limit(10)
+                .collect(Collectors.toList());
 
-    /**
-     * Health check for analytics service
-     */
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Analytics service is running");
-    }
+        List<Map<String, Object>> activity = recentBookings.stream().map(b -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", b.getId());
+            map.put("type", "booking");
+            map.put("message", String.format("User %s booked Slot %s",
+                    b.getUser() != null ? b.getUser().getName() : "Unknown",
+                    b.getSlot() != null ? b.getSlot().getSlotNumber() : "Unknown"));
+            map.put("time", b.getCreatedAt());
+            map.put("status", b.getStatus());
+            return map;
+        }).collect(Collectors.toList());
 
-    // Error response class
-    @SuppressWarnings("unused") // getError() is used by Jackson for JSON serialization
-    private static class ErrorResponse {
-        private String error;
-
-        public ErrorResponse(String error) {
-            this.error = error;
-        }
-
-        public String getError() {
-            return error;
-        }
+        return ResponseEntity.ok(activity);
     }
 }
